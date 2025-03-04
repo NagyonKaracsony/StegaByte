@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<PackageId>StegaByte</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Nagy Gergely Eliot</Authors>
+		<Description>A lightweight, easy-to-use C# library for encoding any serializable object into a PNG image file and decoding it back. It uses JSON serialization internally and stores type information alongside the data.</Description>
+		<PackageTags>Steganography;PNG;Encoding</PackageTags>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/NagyonKaracsony/StegaByte.git</RepositoryUrl>
+		<Copyright> Copyright (c) Nagy Gergely Eliot 2025 </Copyright>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<OutputType>Library</OutputType>
+		<AssemblyName>StegaByte</AssemblyName>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="docs\README.md" Pack="true" PackagePath="\"/>
+		<None Include="docs\icon.png" Pack="true" PackagePath="\"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.1" />
+		<PackageReference Include="System.Drawing.Common" Version="4.7.2" />
+		<PackageReference Include="System.Text.Json" Version="4.7.2" />
+	</ItemGroup>
+</Project>
