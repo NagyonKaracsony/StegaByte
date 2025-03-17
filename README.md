@@ -83,7 +83,7 @@ var readStringText = Decoder.Decode(filePath);
 
 string reversedReadStringText = readStringText.ToString().Reverse();
 ```
-## For more examples you can check out the [StegaByte tests](./Src/StegaByte.Tests/UnitTest1.cs).
+## For more examples you can check out the [StegaByte tests](Src/Stegabyte.Tests/UnitTest1.cs).
 
 ## Limitations
 ### Not Encryption-Based:
