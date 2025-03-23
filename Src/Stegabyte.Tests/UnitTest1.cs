@@ -1,34 +1,31 @@
-﻿using System.Diagnostics;
+﻿[assembly: CollectionBehavior(DisableTestParallelization = true)]
 namespace StegaByte.Tests
 {
+    [Collection("Sequential")]
     public class EncoderTests
     {
-        private Stopwatch stopwatch = new();
         [Fact]
         public void Encode_StringText()
         {
             // Declare a string type variable with an assigned value (A simple Lorem ipsum in this case)
             string stringText = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.";
             // Declare the path string variable containing where the image will be saved and it's name (Temp folder and StegaByteStringText.png in this case).
-            string stringTextImagePath = Path.Combine(Path.GetTempPath(), "StegaByteStringText.png");
-            stopwatch.Start();
+            string uniqueFileName = $"StegaByte_{Guid.NewGuid()}.png";
+            string filePath = Path.Combine(Path.GetTempPath(), uniqueFileName);
             try
             {
                 // Encode the desired data onto the image at the specified path using the Encoder class.
-                Encoder.Encode(stringText, stringTextImagePath);
+                Encoder.Encode(stringText, filePath);
                 // Read the encoded data and explicitly cast it to a string type using the Decoder class.
-                string readStringText = (string)Decoder.Decode(stringTextImagePath);
+                string readStringText = (string)Decoder.Decode(filePath);
                 // Check if the decoded data equals the original data. If so the test passes.
                 Assert.Equal(stringText, readStringText);
             }
             finally
             {
-                // Cleaup
-                Thread.Sleep(100); // Give OS time to release file
-                if (File.Exists(stringTextImagePath)) File.Delete(stringTextImagePath);
+                // Cleanup
+                if (File.Exists(filePath)) File.Delete(filePath);
             }
-            stopwatch.Stop();
-            Console.WriteLine($"String writing test succseeded taking {stopwatch.ElapsedMilliseconds - 100}ms.");
         }
         [Fact]
         public void Encode_ClassInstance()
@@ -36,14 +33,14 @@ namespace StegaByte.Tests
             // Declare and assign a Person type class instance.
             Person classInstance = new Person("Dave Corall", 47, "Yellow");
             // Declare the path string variable containing where the image will be saved and it's name (Temp folder and StegaByteClassInstance.png in this case).
-            string classInstanceImagePath = Path.Combine(Path.GetTempPath(), "StegaByteClassInstance.png");
-            stopwatch.Start();
+            string uniqueFileName = $"StegaByte_{Guid.NewGuid()}.png";
+            string filePath = Path.Combine(Path.GetTempPath(), uniqueFileName);
             try
             {
                 // Encode the desired data onto the image at the specified path using the Encoder class.
-                Encoder.Encode(classInstance, classInstanceImagePath);
+                Encoder.Encode(classInstance, uniqueFileName);
                 // Read the encoded data and explicitly cast it to a string type using the Decoder class.
-                Person readClassInstance = (Person)Decoder.Decode(classInstanceImagePath);
+                Person readClassInstance = (Person)Decoder.Decode(uniqueFileName);
                 // Check if the decoded data equals the original data. If so the test passes.
                 Assert.Equal(classInstance.Name, readClassInstance.Name);
                 Assert.Equal(classInstance.Age, readClassInstance.Age);
@@ -51,12 +48,9 @@ namespace StegaByte.Tests
             }
             finally
             {
-                // Cleaup
-                Thread.Sleep(100); // Give OS time to release file
-                if (File.Exists(classInstanceImagePath)) File.Delete(classInstanceImagePath);
+                // Cleanup
+                if (File.Exists(uniqueFileName)) File.Delete(uniqueFileName);
             }
-            stopwatch.Stop();
-            Console.WriteLine($"Class writing test succseeded taking {stopwatch.ElapsedMilliseconds - 100}ms.");
         }
         [Fact]
         public void Encode_ClassList()
@@ -69,15 +63,15 @@ namespace StegaByte.Tests
                 new Person("Joe Bloggs", 31, "Purple")
             };
             // Declare the path string variable containing where the image will be saved and it's name (Temp folder and StegaByteStringText.png in this case).
-            string classListImagePath = Path.Combine(Path.GetTempPath(), "StegaByteClassList.png");
-            stopwatch.Start();
+            string uniqueFileName = $"StegaByte_{Guid.NewGuid()}.png";
+            string filePath = Path.Combine(Path.GetTempPath(), uniqueFileName);
             try
             {
                 // Encode the desired data onto the image at the specified path using the Encoder class.
-                Encoder.Encode(classList, classListImagePath);
+                Encoder.Encode(classList, uniqueFileName);
                 // Read the encoded data and explicitly cast it to a string type using the Decoder class.
-                List<Person> readClassList = (List<Person>)Decoder.Decode(classListImagePath);
-                
+                List<Person> readClassList = (List<Person>)Decoder.Decode(uniqueFileName);
+
                 // Check if the decoded data equals the original data. If so the test passes.
                 Assert.Equal(classList[0].Name, readClassList[0].Name);
                 Assert.Equal(classList[0].Age, readClassList[0].Age);
@@ -93,12 +87,9 @@ namespace StegaByte.Tests
             }
             finally
             {
-                // Cleaup
-                Thread.Sleep(100); // Give OS time to release file
-                if (File.Exists(classListImagePath)) File.Delete(classListImagePath);
+                // Cleanup
+                if (File.Exists(uniqueFileName)) File.Delete(uniqueFileName);
             }
-            stopwatch.Stop();
-            Console.WriteLine($"Class list writing test succseeded taking {stopwatch.ElapsedMilliseconds - 100}ms.");
         }
         [Fact]
         public void Encode_ComplexClass()
@@ -106,14 +97,14 @@ namespace StegaByte.Tests
             // Declare a ComplexClass type variable with an assigned value.
             var complexClass = new ComplexClass("John Doe", 23, "Blue");
             // Declare the path string variable containing where the image will be saved and it's name (Temp folder and StegaByteStringTextImagePath.png in this case).
-            string complexClassImagePath = Path.Combine(Path.GetTempPath(), "StegaByteComplexClass.png");
-            stopwatch.Start();
+            string uniqueFileName = $"StegaByte_{Guid.NewGuid()}.png";
+            string filePath = Path.Combine(Path.GetTempPath(), uniqueFileName);
             try
             {
                 // Encode the desired data onto the image at the specified path using the Encoder class.
-                Encoder.Encode(complexClass, complexClassImagePath);
+                Encoder.Encode(complexClass, filePath);
                 // Read the encoded data and explicitly cast it to a string type using the Decoder class.
-                ComplexClass readComplexClass = (ComplexClass)Decoder.Decode(complexClassImagePath);
+                ComplexClass readComplexClass = (ComplexClass)Decoder.Decode(filePath);
                 // Check if the decoded data equals the original data. If so the test passes.
                 Assert.Equal(complexClass.someText, readComplexClass.someText);
                 Assert.Equal(complexClass.someNumber, readComplexClass.someNumber);
@@ -123,19 +114,15 @@ namespace StegaByte.Tests
             }
             finally
             {
-                // Cleaup
-                Thread.Sleep(100); // Give OS time to release file
-                if (File.Exists(complexClassImagePath)) File.Delete(complexClassImagePath);
+                // Cleanup
+                if (File.Exists(filePath)) File.Delete(filePath);
             }
-            stopwatch.Stop();
-            Console.WriteLine($"Complex Class writing test succseeded taking {stopwatch.ElapsedMilliseconds - 100}ms.");
         }
         [Fact]
         public void Encode_NullObject_ThrowsArgumentNullException()
         {
-            string filePath = Path.Combine(Path.GetTempPath(), "StegaByteNullException.png");
-            stopwatch.Start();
-            try
+            string uniqueFileName = $"StegaByte_{Guid.NewGuid()}.png";
+            string filePath = Path.Combine(Path.GetTempPath(), uniqueFileName); try
             {
                 var exception = Assert.Throws<ArgumentNullException>(() => Encoder.Encode(null, filePath));
                 Assert.Equal("obj", exception.ParamName);
@@ -143,30 +130,23 @@ namespace StegaByte.Tests
             finally
             {
                 // Cleanup
-                Thread.Sleep(100); // Give OS time to release file
                 if (File.Exists(filePath)) File.Delete(filePath);
             }
-            stopwatch.Stop();
-            Console.WriteLine($"Exception test succseeded taking {stopwatch.ElapsedMilliseconds - 100}ms.");
         }
         [Fact]
         public void Encode_EmptyString_CreatesPngFile()
         {
             string testObject = string.Empty;
-            string filePath = Path.Combine(Path.GetTempPath(), "StegaByteEmptyString.png");
-            stopwatch.Start();
-            try
+            string uniqueFileName = $"StegaByte_{Guid.NewGuid()}.png";
+            string filePath = Path.Combine(Path.GetTempPath(), uniqueFileName); try
             {
                 Encoder.Encode(testObject, filePath);
             }
             finally
             {
-                // Cleaup
-                Thread.Sleep(100); // Give OS time to release file
+                // Cleanup
                 if (File.Exists(filePath)) File.Delete(filePath);
             }
-            stopwatch.Stop();
-            Console.WriteLine($"Empty String test succseeded taking {stopwatch.ElapsedMilliseconds - 100}ms.");
         }
         /// <summary>
         /// Simple dummy class to test StegaByte's things on.
