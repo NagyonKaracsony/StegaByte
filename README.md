@@ -1,94 +1,88 @@
 # StegaByte
-StegaByte is a lightweight C# library that allows you to store any type of data by encoding it directly into PNG images. Unlike traditional text-based formats such as JSON or XML, StegaByte compresses the data during encoding, resulting in significantly smaller storage sizes (typically 10-80% smaller, depending on the content). 
+<img align="left" style="position: relative; z-index: 1; margin-right:10px;" src="./Src/StegaByte/Docs/icon.png">
+
+#### StegaByte is a lightweight C# library that allows you to store any type of data by encoding it directly into PNG images. Unlike traditional text-based formats such as JSON or XML, StegaByte compresses the data during encoding, resulting in significantly smaller storage sizes (typically 10-80% smaller, depending on the content).
+<br></br>
 
 > #### While inspired by steganography techniques, StegaByte is not designed for secure data storage as decoding images made by StegaByte is not too difficult and should not be used for sensitive information.
 > StegaByte is best classified as a steganography-based data obfuscation tool, suitable for applications where data readability and tamper-resistance are desired without relying on heavy encryption.
 
+## Quick Start
+
+**Add StegaByte to your project via NuGet:**
+```Bash
+dotnet add package StegaByte
+```
+**Or clone the Github repo and add a project reference:**
+```Bash
+git clone https://github.com/NagyonKaracsony/StegaByte.git
+```
+
+```csharp
+using StegaByte;
+
+// Example object
+string helloText = "Hello, World!";
+
+// Encode data to PNG
+Encoder.Encode(helloText, "hello.png");
+
+// Decode back
+string decodedText = (string)Decoder.Decode("hello.png");
+
+Console.WriteLine(decodedText); // Outputs: Hello, World!
+```
+
 ## Features
-- Data-to-Image Encoding: Encode virtually any object or dataset into a PNG format image.
-- Data Compression: Achieves compression efficiency of 10% to 80%, often outperforming plain text or binary storage methods.
-- Lossless Decoding: Ensures exact reconstruction of the original data.
-- Flexible Data Types: Supports simple variables, complex structures, and serialized objects.
-- Multithreaded Encoding/Decoding: Utilizes multiple CPU threads (up to half of available threads) for faster processing.
+- **Data-to-Image Encoding:** Encode virtually any object or dataset into PNG format images.
+- **Data Compression:** Achieves compression efficiency of 10% to 90%, confidently outperforming plain text or text-based formats such as JSON or XML as storage methods.
+- **Lossless Decoding:** Ensures exact reconstruction of original data.
+- **Flexible Data Types:** Supports simple variables, complex structures, and serialized objects.
+- **Multithreaded Encoding/Decoding:** Dynamically uses up to **half of the available CPU threads** for faster processing, adjusting intelligently based on hardware.
 
 ## Usage Scenarios
-- Game Data Storage: Store configuration files, procedural generation seeds, or other non-sensitive game data in a compressed image format.
-- Lightweight anti-cheat or anti-tamper systems
-- Preventing casual reverse-engineering of configuration or metadata.
-- Non-sensitive Obfuscation: Hide data from plain sight without requiring it to be secure (e.g., for modding tools, experimental data storage, or internal tools).
-- Due to it's compression capabilites, you can store significant ammounts if data on a relatively small storage space.
+- **Game Data Storage:** Store configuration files, procedural generation seeds, or other non-sensitive game data in compressed image format.
+- **Lightweight Anti-Cheat / Anti-Tamper Systems:** Obfuscate game config or metadata files.
+- **Preventing Casual Reverse-Engineering:** Especially useful in modding tools, experimental storage, or internal apps.
+- **Efficient Storage:** Thanks to compression, significant amounts of data can be stored using relatively little disk space (especially compared to JSON/XML).
 
-# Examples
-For a simple C# console app Encoding/Decoding goes like this:
+## Supported Runtimes
+- **.NET 8.0**
+
+# Important Note About Casting
+> ### When decoding, the result is returned as a generic object.
+> ### You MUST cast it to the original type to use type-specific methods!
+
+## Examples:
+
 ```Csharp
-// Define the data you wish to encode.
-string stringToEncode = "Hello, world!";
-// define the path where you wish to save the encoded PNG image.
-string filePath = "helloWorld.png";
+// This works fine:
+var decodedText = (string)Decoder.Decode(filePath);
+Console.WriteLine(decodedText.Length); // Type methods accessible.
 
-// Encode your variable's data and type onto the image that will be created or overwritten at [filePath].
-// the type is extracted during the encoding process, so all you have to do is provide a variable of tpye <object> and a path where the image will be saved.
-Encoder.Encode(stringToEncode, filePath);
-
-// Decoding the image
-string readStringText = (string)Decoder.Decode(stringTextImagePath);
-
-// Outputs "Hello, world!" to the console.
-Console.WriteLine(readStringText);
+// This DOES NOT work:
+var decodedText = Decoder.Decode(filePath);
+Console.WriteLine(decodedText.Length); // ERROR:'object' does not contain a definition for 'Length'...
 ```
-### Important note:
-### when Decoding an image you need to cast it to it's original type, or you won't be able to use it's type methods!
-#### You can still access the variable's data, but can't use it's type methods without explicitly casting it to a type first, before operations:
+
+### Alternatively:
+
 ```Csharp
-// This should work without issues!
-var readStringText = Decoder.Decode(filePath);
-
-// Outputs "Hello, world!" to the console.
-Console.WriteLine(readStringText);
+// Using ToString() for simple types:
+var decoded = Decoder.Decode(filePath);
+Console.WriteLine(decoded.ToString().ToUpper()); // Type methods accessible thanks to casting.
 ```
-```Csharp
-// This will NOT work!
-var readStringText = Decoder.Decode(filePath);
 
-foreach(var character in readStringText) { // CS1579 ERROR: Can't operate on type 'object'...
-    Console.WriteLine(character);
-}
-```
-```Csharp
-// This will NOT work!
-var readStringText = Decoder.Decode(filePath);
+### For More Examples: check out the official [StegaByte Unit Tests](Src/Stegabyte.Tests/UnitTest1.cs) for tested use cases!
 
-string reversedReadStringText = readStringText.Reverse(); // CS1061 ERROR: 'object' does not contain a definition for 'Reverse'...
-```
-#### Correct ways to cast decoded data:
-```Csharp
-// This should work without issues!
-var readStringText = (string)Decoder.Decode(filePath);
-
-foreach(var character in readStringText) {
-    Console.WriteLine(character);
-}
-```
-```Csharp
-// This should work without issues!
-string readStringText = (string)Decoder.Decode(filePath);
-
-foreach(var character in readStringText) {
-    Console.WriteLine(character);
-}
-```
-```Csharp
-// This should work without issues!
-var readStringText = Decoder.Decode(filePath);
-
-string reversedReadStringText = readStringText.ToString().Reverse();
-```
-## For more examples you can check out the [StegaByte tests](./Src/StegaByte.Tests/UnitTest1.cs).
-
-## Limitations
+# Limitations
 ### Not Encryption-Based:
-#### StegaByte does not encrypt data. The images can easily be decoded by anyone familiar with the format. Avoid using it for passwords, sensitive user data, or private information.
+**StegaByte does not encrypt data**. Anyone familiar with the format can decode it. **Do NOT use for passwords, personal user data, or sensitive information**.
 ### File Size Constraints:
-#### Due to disk I/O limitations and the nature of image encoding/decoding, it is not recommended to store datasets exceeding around 30 or 50 MBs in a single image. Performance degradation may occur beyond this point, and reading/ writing could take over a minute even on a high end device with fast NVME SSD storage.
+**Due to disk I/O limitations and the nature of image encoding/decoding, it is not recommended to store datasets exceeding around 30 or 50 MBs in a single image as performance degradation may occur beyond this size, disk I/O and image encoding/decoding times may increase significantly (up to a minute or more even on fast hardware).**
 
-Perfect for hiding data in plain sight.
+# Contributing
+Check out [CONTRIBUTING.md](CONTRIBUTING.md). Feel free to open issues, suggest improvements, or submit pull requests!
+
+# Changelog
+Check out [CHANGELOG.md](CHANGELOG.md). All notable changes to this project will be documented there.
