@@ -47,7 +47,10 @@ Console.WriteLine(decodedText); // Outputs: Hello, World!
 - **Efficient Storage:** Thanks to compression, significant amounts of data can be stored using relatively little disk space (especially compared to JSON/XML).
 
 ## Supported Runtimes
+- **.NET 6.0**
+- **.NET 7.0**
 - **.NET 8.0**
+- **.NET 9.0 (Preview)**
 
 # Important Note About Casting
 > ### When decoding, the result is returned as a generic object.

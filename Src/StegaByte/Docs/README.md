@@ -1,8 +1,6 @@
 # StegaByte
-<img align="left" style="position: relative; z-index: 1; margin-right:10px;" src="icon.png">
 
 #### StegaByte is a lightweight C# library that allows you to store any type of data by encoding it directly into PNG images. Unlike traditional text-based formats such as JSON or XML, StegaByte compresses the data during encoding, resulting in significantly smaller storage sizes (typically 10-80% smaller, depending on the content).
-<br></br>
 
 > #### While inspired by steganography techniques, StegaByte is not designed for secure data storage as decoding images made by StegaByte is not too difficult and should not be used for sensitive information.
 > StegaByte is best classified as a steganography-based data obfuscation tool, suitable for applications where data readability and tamper-resistance are desired without relying on heavy encryption.
@@ -47,7 +45,10 @@ Console.WriteLine(decodedText); // Outputs: Hello, World!
 - **Efficient Storage:** Thanks to compression, significant amounts of data can be stored using relatively little disk space (especially compared to JSON/XML).
 
 ## Supported Runtimes
+- **.NET 6.0**
+- **.NET 7.0**
 - **.NET 8.0**
+- **.NET 9.0 (Preview)**
 
 # Important Note About Casting
 > ### When decoding, the result is returned as a generic object.
