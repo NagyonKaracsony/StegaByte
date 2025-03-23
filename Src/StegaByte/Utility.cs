@@ -23,8 +23,6 @@ namespace StegaByte
             MB,
             /// <summary>1024 megabytes (1 gigabyte).</summary>
             GB,
-            /// <summary>1024 gigabytes (1 terabyte).</summary>
-            TB,
         }
         /// <summary>
         /// Calculates the byte size of <paramref name="obj"/>
@@ -33,7 +31,7 @@ namespace StegaByte
         /// <param name="precision">The number of digit precision to round the byte size before it is returned.</param>
         /// <param name="TargetUnit">The unit of storage to convert the size of <paramref name="obj"/> to.</param>
         /// <returns>The number of bytes <paramref name="obj"/> takes up, or returns the size as converted to <paramref name="TargetUnit"/> data unit.</returns>
-        public static float GetObjectSize(object obj, DataSizeUnit TargetUnit, int precision)
+        public static double GetObjectSize(object obj, DataSizeUnit TargetUnit, int precision)
         {
             int devider;
             switch (TargetUnit)
@@ -48,9 +46,6 @@ namespace StegaByte
                     devider = 1024 * 1024;
                     break;
                 case DataSizeUnit.GB:
-                    devider = 1024 * 1024 * 1024;
-                    break;
-                case DataSizeUnit.TB:
                     devider = 1024 * 1024 * 1024;
                     break;
                 default:
@@ -101,29 +96,31 @@ namespace StegaByte
         /// <returns>A <see cref="StegaByteProfile"/> type object containing the results of the performance profiling</returns>
         public static StegaByteProfile Profile(object objToProfile)
         {
-            Stopwatch mainStopwatch = new Stopwatch();
-            Stopwatch stopwatch = new Stopwatch();
-            mainStopwatch.Start();
+            Stopwatch TotalTimeCounter = new Stopwatch();
+            Stopwatch ProcessTimeCounter = new Stopwatch();
+            TotalTimeCounter.Start();
             StegaByteProfile profile = new StegaByteProfile();
             string tempFilePath = Path.Combine(Path.GetTempPath(), "StegabyteProfiler.png");
 
-            stopwatch.Start();
+            profile.obj = objToProfile;
+
+            ProcessTimeCounter.Start();
             Encoder.Encode(objToProfile, tempFilePath);
-            stopwatch.Stop();
-            profile.EncodingTime = stopwatch.ElapsedMilliseconds;
+            ProcessTimeCounter.Stop();
+            profile.EncodingTime = ProcessTimeCounter.ElapsedMilliseconds;
 
-            stopwatch.Restart();
+            ProcessTimeCounter.Restart();
             var readObj = Decoder.Decode(tempFilePath);
-            stopwatch.Stop();
-            profile.DecodingTime = stopwatch.ElapsedMilliseconds;
+            ProcessTimeCounter.Stop();
+            profile.DecodingTime = ProcessTimeCounter.ElapsedMilliseconds;
 
-            stopwatch.Restart();
+            ProcessTimeCounter.Restart();
             Type targetType = objToProfile.GetType();
             object castedValue = Convert.ChangeType(readObj, targetType);
-            stopwatch.Stop();
+            ProcessTimeCounter.Stop();
 
-            mainStopwatch.Stop();
-            profile.TotalTime = mainStopwatch.ElapsedMilliseconds;
+            TotalTimeCounter.Stop();
+            profile.TotalTime = TotalTimeCounter.ElapsedMilliseconds;
             return profile;
         }
     }
@@ -145,5 +142,14 @@ namespace StegaByte
         public long CleanupTime { get; set; }
         /// <summary>Returns the time it took in total to encode, decode, cast, and cleanup the image the encoder created for obj in milliseconds.</summary>
         public long TotalTime { get; set; }
+        /// <summary>Returns the file path of the PNG image file where the profiler saves the encoded object.</summary>
+        public static string FilePath = Path.Combine(Path.GetTempPath(), "StegabyteProfiler.png");
+        /// <summary>Returns an instance of the object that was profiled</summary>
+        public object obj { get; set; }
+        /// <summary>Returns the efficiency of the encoding process (how much less space is used on disk when <see cref="obj"/> is encoded, and not stored on disk directly).</summary>
+        /// <remarks>
+        /// Will return with a negative value if the encoded object is larger than the object itself, this is solely due to the compressibility of the object.
+        /// </remarks>
+        public double Efficiency => ((1 - (File.ReadAllBytes(FilePath).Length) / Utility.GetObjectSize(obj, Utility.DataSizeUnit.B, 0)) * 100);
     }
 }
